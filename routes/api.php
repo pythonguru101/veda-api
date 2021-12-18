@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +16,16 @@ use App\Http\Controllers\API\RegisterController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post("register", [UserController::class, "register"]);
 
-Route::post('register', [RegisterController::class, 'register']);
-Route::post('login', [RegisterController::class, 'login']);
+Route::post("login", [UserController::class, "login"]);
+
+// sanctum auth middleware routes
+
+
+    Route::get("user", [UserController::class, "user"]);
+    Route::middleware(['auth:api'])->group(function () {
+        Route::post('add_task/{id?}',  [TaskController::class, "add_task"]);
+        Route::post('remove_task/{id?}',  [TaskController::class, "remove_task"]);
+    }); 
+
